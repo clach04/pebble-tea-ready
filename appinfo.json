@@ -1,0 +1,45 @@
+{
+    "appKeys": {
+        "PERSIST_TEA_BLACK": 10,
+        "PERSIST_TEA_GREEN": 11,
+        "PERSIST_TEA_HERBAL": 12,
+        "PERSIST_TEA_MATE": 13,
+        "PERSIST_TEA_OOLONG": 14,
+        "PERSIST_TEA_PUERH": 15,
+        "PERSIST_TEA_ROOIBOS": 16,
+        "PERSIST_TEA_WHITE": 17
+    },
+    "capabilities": [
+        "configurable"
+    ],
+    "companyName": "L\u00e9omike H\u00e9bert",
+    "enableMultiJS": false,
+    "longName": "Tea's Ready",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/cross.png",
+                "name": "CROSS",
+                "targetPlatforms": [
+                    "aplite",
+                    "basalt",
+                    "chalk"
+                ],
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Tea",
+    "targetPlatforms": [
+        "aplite",
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "cf418523-f867-453d-8b4e-e04ea2f9df06",
+    "versionLabel": "0.2",
+    "watchapp": {
+        "watchface": false
+    }
+}

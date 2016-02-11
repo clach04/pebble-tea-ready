@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" enable-background="new 0 0 120 120" xml:space="preserve">
+	<!-- Background -->
+	<rect fill="#00AAFF" width="120" height="120"/>
+	
+	<g transform="translate(10,10)">
+		<!-- Cup -->
+		<polygon fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="6,32 6,64 24,82 62,82 80,64 80,32"/>
+		<!-- Handle -->
+		<polygon fill="none" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="80,38 94,38 94,58 80,58"/>
+		<!-- Plate -->
+		<polygon fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="6,82 80,82 68,94 18,94"/>
+		<!-- Vapor -->
+		<line fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="36" y1="4" x2="28" y2="20"/>
+		<line fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="58" y1="4" x2="50" y2="20"/>
+	</g>
+</svg>
