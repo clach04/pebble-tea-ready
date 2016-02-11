@@ -6,13 +6,13 @@
 	
 	<g transform="translate(10,10)">
 		<!-- Cup -->
-		<polygon fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="6,32 6,64 24,82 62,82 80,64 80,32"/>
+		<polygon fill="#FFFFFF" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" points="6,32 6,64 24,82 62,82 80,64 80,32"/>
 		<!-- Handle -->
-		<polygon fill="none" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="80,38 94,38 94,58 80,58"/>
+		<polygon fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" points="80,38 94,38 94,58 80,58"/>
 		<!-- Plate -->
-		<polygon fill="#FFFFFF" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="6,82 80,82 68,94 18,94"/>
+		<polygon fill="#FFFFFF" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" points="6,82 80,82 68,94 18,94"/>
 		<!-- Vapor -->
-		<line fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="36" y1="4" x2="28" y2="20"/>
-		<line fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="58" y1="4" x2="50" y2="20"/>
+		<line fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" x1="36" y1="4" x2="28" y2="20"/>
+		<line fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" x1="58" y1="4" x2="50" y2="20"/>
 	</g>
 </svg>
