@@ -68,7 +68,7 @@ static void countdown_window_load(Window *window) {
   #endif
 
   // Display action bar
-  s_cross_bitmap = gbitmap_create_with_resource(RESOURCE_ID_CROSS);
+  s_cross_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CROSS);
   s_action_bar_layer = action_bar_layer_create();
   action_bar_layer_set_icon(s_action_bar_layer, BUTTON_ID_SELECT, s_cross_bitmap);
   action_bar_layer_set_click_config_provider(s_action_bar_layer, countdown_click_config_provider);

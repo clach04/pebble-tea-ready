@@ -20,12 +20,8 @@
         "media": [
             {
                 "file": "images/cross.png",
-                "name": "CROSS",
-                "targetPlatforms": [
-                    "aplite",
-                    "basalt",
-                    "chalk"
-                ],
+                "name": "IMAGE_CROSS",
+                "targetPlatforms": null,
                 "type": "png"
             }
         ]
