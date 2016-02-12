@@ -1,8 +1,5 @@
 #pragma once
-
 #include <pebble.h>
-#include "countdown.h"
-#include "keys.h"
 
 /********************/
 /*     VARIABLE     */

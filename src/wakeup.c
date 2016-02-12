@@ -1,3 +1,5 @@
+#include "keys.h"
+#include "tea_cup.h"
 #include "wakeup.h"
 
 /********************/

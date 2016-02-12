@@ -1,4 +1,6 @@
 #include "inbox.h"
+#include "keys.h"
+#include "menu.h"
 
 /********************/
 /*     MESSAGES     */

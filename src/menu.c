@@ -1,3 +1,5 @@
+#include "countdown.h"
+#include "keys.h"
 #include "menu.h"
 
 /********************/
