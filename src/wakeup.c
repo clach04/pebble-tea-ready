@@ -75,7 +75,7 @@ static void wakeup_back_handler(ClickRecognizerRef recognizer, void *context) {
 
 // Remotely callable function to kill the window
 void wakeup_destroy() {
-  window_destroy(s_wakeup_window);
+  window_stack_remove(s_wakeup_window, true);
 }
 
 // Unloading code
@@ -83,6 +83,7 @@ static void wakeup_window_unload(Window *window) {
   app_timer_cancel(s_vibrate_timer);
   layer_destroy(s_tea_cup_canvas_layer);
   tea_cup_destroy();
+  window_destroy(window);
 }
 
 /********************/

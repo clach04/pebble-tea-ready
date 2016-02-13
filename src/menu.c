@@ -152,10 +152,11 @@ void menu_mark_dirty() {
 
 // Remotely callable function to kill the window
 void menu_destroy() {
-  window_destroy(s_menu_window);
+  window_stack_remove(s_menu_window, true);
 }
 
 // Unloading code
 static void menu_window_unload(Window *window) {
   menu_layer_destroy(s_menu_layer);
+  window_destroy(window);
 }

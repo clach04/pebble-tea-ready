@@ -127,7 +127,7 @@ static void countdown_click_config_provider(void *context) {
 
 // Remotely callable function to kill the window
 void countdown_destroy() {
-  window_destroy(s_countdown_window);
+  window_stack_remove(s_countdown_window, true);
 }
 
 // Unloading code
@@ -137,6 +137,7 @@ static void countdown_window_unload(Window *window) {
   tea_cup_destroy();
   gbitmap_destroy(s_cross_bitmap);
   action_bar_layer_destroy(s_action_bar_layer);
+  window_destroy(window);
 }
 
 /********************/
