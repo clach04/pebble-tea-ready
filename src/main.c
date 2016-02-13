@@ -34,7 +34,7 @@ static void init(void) {
 
   // Handle messages
   app_message_register_inbox_received(inbox_received_handler);
-  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+  app_message_open(1024, 0);
   
   // Subscribe to wakeup service to get wakeup events while app is running
   wakeup_service_subscribe(wakeup_timer_handler);
