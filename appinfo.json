@@ -7,7 +7,8 @@
         "PERSIST_TEA_OOLONG": 14,
         "PERSIST_TEA_PUERH": 15,
         "PERSIST_TEA_ROOIBOS": 16,
-        "PERSIST_TEA_WHITE": 17
+        "PERSIST_TEA_WHITE": 17,
+        "PERSIST_TEMP_UNIT": 9
     },
     "capabilities": [
         "configurable"

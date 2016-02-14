@@ -108,7 +108,10 @@ static void menu_draw_row(GContext *ctx, const Layer *cell_layer, MenuIndex *cel
   }
   
   // Determine the text to display
-  snprintf(s_tea_text, sizeof(s_tea_text), "%u mins (%u°C)", steep_time / 60, temp);
+  if(persist_exists(PERSIST_TEMP_UNIT) && persist_read_int(PERSIST_TEMP_UNIT) == 1)
+    snprintf(s_tea_text, sizeof(s_tea_text), "%u mins (%u°F)", steep_time / 60, (int) (temp * 1.8 + 32));
+  else
+    snprintf(s_tea_text, sizeof(s_tea_text), "%u mins (%u°C)", steep_time / 60, temp);
   
   // Draw the cell
   menu_cell_basic_draw(ctx, cell_layer, name, s_tea_text, NULL);

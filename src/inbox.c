@@ -10,7 +10,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
   int i;
   
   // Load all settings
-  for(i = PERSIST_TEA_BLACK; i <= PERSIST_TEA_WHITE; i++) {
+  for(i = PERSIST_TEMP_UNIT; i <= PERSIST_TEA_WHITE; i++) {
     Tuple *steep_time = dict_find(iter, i);
     persist_write_int(i, steep_time->value->int32);
   }

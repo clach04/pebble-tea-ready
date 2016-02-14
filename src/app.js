@@ -1,6 +1,6 @@
 Pebble.addEventListener('showConfiguration', function(e) {
   // Show config page
-  Pebble.openURL('https://leomike.com/pebble/tea_config.html');
+  Pebble.openURL('https://leomike.com/pebble/tea_config_0.4.html');
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -9,6 +9,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
   
   // Prepare AppMessage payload
   var dict = {
+    'PERSIST_TEMP_UNIT': config_data.temp_unit,
     'PERSIST_TEA_BLACK': (config_data.black + 4) * 60,
     'PERSIST_TEA_GREEN': (config_data.green + 1) * 60,
     'PERSIST_TEA_HERBAL': (config_data.herbal + 4) * 60,
