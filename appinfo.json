@@ -1,5 +1,6 @@
 {
     "appKeys": {
+        "PERSIST_READY": 8,
         "PERSIST_TEA_BLACK": 10,
         "PERSIST_TEA_GREEN": 11,
         "PERSIST_TEA_HERBAL": 12,

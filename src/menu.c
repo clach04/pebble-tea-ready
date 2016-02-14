@@ -12,8 +12,8 @@ static void menu_select_callback(struct MenuLayer*, MenuIndex*, void*);
 static void menu_window_load(Window*);
 static void menu_window_unload(Window*);
 
-static int getTeaCount();
-static int getTeaIndexByPosition(int);
+static int get_tea_tount();
+static int get_tea_index_by_pos(int);
   
 #ifdef PBL_ROUND
 static int16_t menu_cell_height(MenuLayer*, MenuIndex*, void*);
@@ -87,7 +87,7 @@ static void menu_window_load(Window *window) {
 
 // Get entry count
 static uint16_t menu_sections_count(struct MenuLayer *menulayer, uint16_t section_index, void *callback_context) {
-  return getTeaCount();
+  return get_tea_tount();
 }
 
 // Get cell height
@@ -99,7 +99,7 @@ static int16_t menu_cell_height(MenuLayer *menu_layer, MenuIndex *cell_index, vo
 
 // Display menu entry
 static void menu_draw_row(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *callback_context) {
-  int index = getTeaIndexByPosition(cell_index->row);
+  int index = get_tea_index_by_pos(cell_index->row);
   char* name = tea_array[index].name;
   int steep_time = tea_array[index].def_time;
   int persist_key = tea_array[index].persist_key;
@@ -136,7 +136,7 @@ static void menu_draw_row(GContext *ctx, const Layer *cell_layer, MenuIndex *cel
 
 // Function called on select press
 static void menu_select_callback(struct MenuLayer *s_menu_layer, MenuIndex *cell_index, void *callback_context) {
-  int index = getTeaIndexByPosition(cell_index->row);
+  int index = get_tea_index_by_pos(cell_index->row);
   int steep_time = tea_array[index].def_time;
   int persist_key = tea_array[index].persist_key;
   
@@ -147,7 +147,7 @@ static void menu_select_callback(struct MenuLayer *s_menu_layer, MenuIndex *cell
   time_t wakeup_time = time(NULL) + steep_time;
 
   // Schedule the wakeup with the tea ID as reason
-  WakeupId s_wakeup_id = wakeup_schedule(wakeup_time, cell_index->row, true);
+  WakeupId s_wakeup_id = wakeup_schedule(wakeup_time, cell_index->row, false);
 
   // Continue if wakeup event was scheduled
   if (s_wakeup_id > 0) {
@@ -183,7 +183,7 @@ static void menu_window_unload(Window *window) {
 /*  TEA PREFERENCE  */
 /********************/
 
-static int getTeaIndexByPosition(int position) {
+static int get_tea_index_by_pos(int position) {
   int count = 0, i;
   
   // Count options with a time attached
@@ -201,7 +201,7 @@ static int getTeaIndexByPosition(int position) {
   return 1;
 }
 
-static int getTeaCount() {
+static int get_tea_tount() {
   int count = 0, i;
   
   // Count options with a time attached
@@ -215,4 +215,8 @@ static int getTeaCount() {
     return 1;
   
   return count;
+}
+
+int get_tea_temp(int index) {
+  return tea_array[index].temp;
 }

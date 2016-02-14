@@ -5,10 +5,12 @@
 /********************/
 
 // Display variable
-static GPath *s_tea_cup = NULL;
-static GPath *s_tea_cup_fill = NULL;
-static GPath *s_plate = NULL;
-static GPath *s_handle = NULL;
+static GPath *s_tea_cup;
+static GPath *s_tea_cup_fill;
+static GPath *s_plate;
+static GPath *s_handle;
+static GPath *s_vapor_left;
+static GPath *s_vapor_right;
 
 // Path
 static GPathInfo s_path_tea_cup = {
@@ -53,9 +55,18 @@ static GPathInfo s_path_handle = {
     {12, 18} // Plate - bottom right
   }
 };
+static GPathInfo s_path_vapor = {
+  .num_points = 4,
+  .points = (GPoint []) {
+    {10, 0}, // Handle - top right
+    {3, 7}, // Handle - center left
+    {7, 7}, // Handle - center right
+    {0, 14}, // Handle - bottom left
+  }
+};
 
 // Other variables
-static bool s_tea_cup_loaded;
+static uint8_t s_tea_cup_loaded;
 
 /********************/
 /*     DISPLAY      */
@@ -71,7 +82,7 @@ void tea_cup_draw(Layer *layer, GContext *ctx, uint8_t fill_percentage, bool vap
   
   // Initialize the tea cup
   if(!s_tea_cup_loaded) {
-    s_tea_cup_loaded = true;
+    s_tea_cup_loaded = 1;
     
     // Create path
     s_tea_cup = gpath_create(&s_path_tea_cup);
@@ -84,6 +95,15 @@ void tea_cup_draw(Layer *layer, GContext *ctx, uint8_t fill_percentage, bool vap
     gpath_move_to(s_tea_cup_fill, GPoint(bounds.size.w / 2 - 25, bounds.size.h / 2 - 23));
     gpath_move_to(s_plate, GPoint(bounds.size.w / 2 - 25, bounds.size.h / 2 + 17));
     gpath_move_to(s_handle, GPoint(bounds.size.w / 2 - 37, bounds.size.h / 2 - 20));
+    
+    // Add vapor
+    if(vapor) {
+      s_vapor_left = gpath_create(&s_path_vapor);
+      s_vapor_right = gpath_create(&s_path_vapor);
+      gpath_move_to(s_vapor_left, GPoint(bounds.size.w / 2 - 10, bounds.size.h / 2 - 45));
+      gpath_move_to(s_vapor_right, GPoint(bounds.size.w / 2 + 6, bounds.size.h / 2 - 45));
+      s_tea_cup_loaded = 2;
+    }
   }
   
   // Setup fill path
@@ -106,28 +126,36 @@ void tea_cup_draw(Layer *layer, GContext *ctx, uint8_t fill_percentage, bool vap
     s_path_tea_cup_fill.points[4] = GPoint(50, 25);
   }
   
-  // Fill the cup
+  // Fill
   graphics_context_set_fill_color(ctx, GColorBlack);
   gpath_draw_filled(ctx, s_tea_cup);
   graphics_context_set_fill_color(ctx, GColorWhite);
   gpath_draw_filled(ctx, s_plate);
   gpath_draw_filled(ctx, s_tea_cup_fill);
   
-  // Outline the cup
+  // Outline
   graphics_context_set_stroke_color(ctx, GColorBlack);
   graphics_context_set_stroke_width(ctx, 2);
   gpath_draw_outline(ctx, s_plate);
   gpath_draw_outline(ctx, s_tea_cup);
   gpath_draw_outline(ctx, s_handle);
+  if(vapor) {
+    gpath_draw_outline(ctx, s_vapor_left);
+    gpath_draw_outline(ctx, s_vapor_right);
+  }
 }
 
 // Destroy the tea cup
 void tea_cup_destroy() {
-  if(s_tea_cup_loaded) {
+  if(s_tea_cup_loaded > 0) {
     gpath_destroy(s_tea_cup);
     gpath_destroy(s_tea_cup_fill);
     gpath_destroy(s_plate);
     gpath_destroy(s_handle);
+    if(s_tea_cup_loaded > 1) {
+      gpath_destroy(s_vapor_left);
+      gpath_destroy(s_vapor_right);
+    }
     
     s_tea_cup_loaded = false;
   }

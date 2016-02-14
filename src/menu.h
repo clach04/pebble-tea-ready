@@ -19,3 +19,4 @@ typedef struct {
 void menu_destroy();
 void menu_display();
 void menu_mark_dirty();
+int get_tea_temp(int);
