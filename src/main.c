@@ -40,14 +40,7 @@ static void init(void) {
   wakeup_service_subscribe(wakeup_timer_handler);
 }
 
-static void deinit(void) {
-  wakeup_destroy();
-  countdown_destroy();
-  menu_destroy();
-}
-
 int main(void) {
   init();
   app_event_loop();
-  deinit();
 }
