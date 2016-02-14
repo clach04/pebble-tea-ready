@@ -90,7 +90,7 @@ static void countdown_window_load(Window *window) {
 
 // Update the display layer
 static void countdown_update_layer(Layer *layer, GContext *ctx) {
-  tea_cup_draw(layer, ctx, s_countdown_percentage);
+  tea_cup_draw(layer, ctx, s_countdown_percentage, true);
 }
 
 /********************/

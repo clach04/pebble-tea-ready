@@ -54,7 +54,7 @@ static void wakeup_window_load(Window *window) {
 
 // Update the display layer
 static void wakeup_update_layer(Layer *layer, GContext *ctx) {
-  tea_cup_draw(layer, ctx, 100);
+  tea_cup_draw(layer, ctx, 100, true);
 }
 
 /********************/

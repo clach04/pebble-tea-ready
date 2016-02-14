@@ -62,7 +62,7 @@ static bool s_tea_cup_loaded;
 /********************/
 
 // Draw tea cup on context
-void tea_cup_draw(Layer *layer, GContext *ctx, uint8_t fill_percentage) {
+void tea_cup_draw(Layer *layer, GContext *ctx, uint8_t fill_percentage, bool vapor) {
   GRect bounds = layer_get_bounds(layer);
   if(fill_percentage < 100)
     fill_percentage = fill_percentage / 100.0 * 36 + 2;

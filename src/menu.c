@@ -11,6 +11,9 @@ static void menu_draw_row(GContext*, const Layer*, MenuIndex*, void*);
 static void menu_select_callback(struct MenuLayer*, MenuIndex*, void*);
 static void menu_window_load(Window*);
 static void menu_window_unload(Window*);
+
+static int getTeaCount();
+static int getTeaIndexByPosition(int);
   
 #ifdef PBL_ROUND
 static int16_t menu_cell_height(MenuLayer*, MenuIndex*, void*);
@@ -84,8 +87,7 @@ static void menu_window_load(Window *window) {
 
 // Get entry count
 static uint16_t menu_sections_count(struct MenuLayer *menulayer, uint16_t section_index, void *callback_context) {
-  int count = sizeof(tea_array) / sizeof(TeaInfo);
-  return count;
+  return getTeaCount();
 }
 
 // Get cell height
@@ -97,13 +99,14 @@ static int16_t menu_cell_height(MenuLayer *menu_layer, MenuIndex *cell_index, vo
 
 // Display menu entry
 static void menu_draw_row(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *callback_context) {
-  char* name = tea_array[cell_index->row].name;
-  int steep_time = tea_array[cell_index->row].def_time;
-  int persist_key = tea_array[cell_index->row].persist_key;
-  int temp = tea_array[cell_index->row].temp;
+  int index = getTeaIndexByPosition(cell_index->row);
+  char* name = tea_array[index].name;
+  int steep_time = tea_array[index].def_time;
+  int persist_key = tea_array[index].persist_key;
+  int temp = tea_array[index].temp;
   
   // Get user preference
-  if(persist_exists(persist_key)) {
+  if(persist_exists(persist_key) && persist_read_int(persist_key) != 0) {
     steep_time = persist_read_int(persist_key);
   }
   
@@ -133,10 +136,12 @@ static void menu_draw_row(GContext *ctx, const Layer *cell_layer, MenuIndex *cel
 
 // Function called on select press
 static void menu_select_callback(struct MenuLayer *s_menu_layer, MenuIndex *cell_index, void *callback_context) {
+  int index = getTeaIndexByPosition(cell_index->row);
+  int steep_time = tea_array[index].def_time;
+  int persist_key = tea_array[index].persist_key;
+  
   // Calculate time to wakeup
-  int steep_time = tea_array[cell_index->row].def_time;
-  int persist_key = tea_array[cell_index->row].persist_key;
-  if(persist_exists(persist_key)) {
+  if(persist_exists(persist_key) && persist_read_int(persist_key) != 0) {
     steep_time = persist_read_int(persist_key);
   }
   time_t wakeup_time = time(NULL) + steep_time;
@@ -172,4 +177,42 @@ void menu_destroy() {
 static void menu_window_unload(Window *window) {
   menu_layer_destroy(s_menu_layer);
   window_destroy(window);
+}
+
+/********************/
+/*  TEA PREFERENCE  */
+/********************/
+
+static int getTeaIndexByPosition(int position) {
+  int count = 0, i;
+  
+  // Count options with a time attached
+  for(i = PERSIST_TEA_BLACK; i <= PERSIST_TEA_WHITE; i++) {
+    if(!persist_exists(i) || persist_read_int(i) != 0) {
+      // Return when the correct entry is found
+      if(count == position)
+        return i - PERSIST_TEA_BLACK;
+      
+      count++;
+    }
+  }
+  
+  // Fallback value (green tea)
+  return 1;
+}
+
+static int getTeaCount() {
+  int count = 0, i;
+  
+  // Count options with a time attached
+  for(i = PERSIST_TEA_BLACK; i <= PERSIST_TEA_WHITE; i++) {
+    if(!persist_exists(i) || persist_read_int(i) != 0)
+      count++;
+  }
+  
+  // Fallback
+  if(count == 0)
+    return 1;
+  
+  return count;
 }
