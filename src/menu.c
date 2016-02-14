@@ -141,7 +141,7 @@ static void menu_select_callback(struct MenuLayer *s_menu_layer, MenuIndex *cell
     persist_write_int(PERSIST_DURATION, steep_time);
   
     // Switch to countdown window
-    countdown_display();
+    countdown_display(false);
   }
 }
 

@@ -25,7 +25,7 @@ static void init(void) {
     
     // Query if the event is still valid
     if (wakeup_query(wakeup_id, NULL)) {
-      countdown_display();
+      countdown_display(true);
     }
     else {
       persist_delete(PERSIST_WAKEUP);

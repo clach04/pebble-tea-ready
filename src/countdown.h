@@ -6,4 +6,4 @@
 /********************/
 
 void countdown_destroy();
-void countdown_display();
+void countdown_display(bool);

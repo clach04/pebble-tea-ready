@@ -40,7 +40,7 @@ static uint16_t s_countdown_duration = 1;
 /********************/
 
 // Remotely callable function to display the window
-void countdown_display() {
+void countdown_display(bool animate) {
   // Create window
   s_countdown_window = window_create();
   window_set_window_handlers(s_countdown_window, (WindowHandlers){
@@ -49,7 +49,7 @@ void countdown_display() {
   });
   
   // Display window
-  window_stack_push(s_countdown_window, true);
+  window_stack_push(s_countdown_window, animate);
 }
 
 // Loading code for the window
