@@ -65,7 +65,7 @@ static bool s_tea_cup_loaded;
 void tea_cup_draw(Layer *layer, GContext *ctx, uint8_t fill_percentage) {
   GRect bounds = layer_get_bounds(layer);
   if(fill_percentage < 100)
-    fill_percentage = fill_percentage / 100.0 * 38.0 + 1;
+    fill_percentage = fill_percentage / 100.0 * 36 + 2;
   else
     fill_percentage = 40;
   
