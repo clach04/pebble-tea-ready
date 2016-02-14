@@ -67,6 +67,8 @@ static void countdown_window_load(Window *window) {
   // Change background color
   #ifdef PBL_COLOR
   window_set_background_color(window, GColorVividCerulean);
+  #else
+  window_set_background_color(window, GColorLightGray);
   #endif
 
   // Display action bar

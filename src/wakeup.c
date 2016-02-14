@@ -42,6 +42,8 @@ static void wakeup_window_load(Window *window) {
   // Change background color
   #ifdef PBL_COLOR
   window_set_background_color(window, GColorOrange);
+  #else
+  window_set_background_color(window, GColorLightGray);
   #endif
 
   // Create canvas Layer and set up the update procedure
