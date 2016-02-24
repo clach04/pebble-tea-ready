@@ -101,14 +101,9 @@ static int16_t menu_cell_height(MenuLayer *menu_layer, MenuIndex *cell_index, vo
 static void menu_draw_row(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *callback_context) {
   int index = get_tea_index_by_pos(cell_index->row);
   char* name = tea_array[index].name;
-  int steep_time = tea_array[index].def_time;
   int persist_key = tea_array[index].persist_key;
+  int steep_time = (persist_read_int(persist_key) != 0 ? persist_read_int(persist_key) : tea_array[index].def_time);
   int temp = tea_array[index].temp;
-  
-  // Get user preference
-  if(persist_exists(persist_key) && persist_read_int(persist_key) != 0) {
-    steep_time = persist_read_int(persist_key);
-  }
   
   // Determine the text to display based on temperature unit
   int temp_unit = persist_exists(PERSIST_TEMP_UNIT) ? persist_read_int(PERSIST_TEMP_UNIT) : 0;
@@ -137,23 +132,21 @@ static void menu_draw_row(GContext *ctx, const Layer *cell_layer, MenuIndex *cel
 // Function called on select press
 static void menu_select_callback(struct MenuLayer *s_menu_layer, MenuIndex *cell_index, void *callback_context) {
   int index = get_tea_index_by_pos(cell_index->row);
-  int steep_time = tea_array[index].def_time;
   int persist_key = tea_array[index].persist_key;
+  int steep_time = (persist_read_int(persist_key) != 0 ? persist_read_int(persist_key) : tea_array[index].def_time);
   
   // Calculate time to wakeup
-  if(persist_exists(persist_key) && persist_read_int(persist_key) != 0) {
-    steep_time = persist_read_int(persist_key);
-  }
   time_t wakeup_time = time(NULL) + steep_time;
 
   // Schedule the wakeup with the tea ID as reason
-  WakeupId s_wakeup_id = wakeup_schedule(wakeup_time, cell_index->row, false);
+  WakeupId s_wakeup_id = wakeup_schedule(wakeup_time, index, false);
 
   // Continue if wakeup event was scheduled
   if (s_wakeup_id > 0) {
-    // Store the handle so we can cancel if necessary
+    // Store information about the countdown in progress
     persist_write_int(PERSIST_WAKEUP, s_wakeup_id);
     persist_write_int(PERSIST_DURATION, steep_time);
+    persist_write_int(PERSIST_COUNT_MODE, 0);
   
     // Switch to countdown window
     countdown_display(false);

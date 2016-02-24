@@ -21,6 +21,12 @@
     "resources": {
         "media": [
             {
+                "file": "images/check.png",
+                "name": "IMAGE_CHECK",
+                "targetPlatforms": null,
+                "type": "png"
+            },
+            {
                 "file": "images/cross.png",
                 "name": "IMAGE_CROSS",
                 "targetPlatforms": null,

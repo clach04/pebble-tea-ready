@@ -1,5 +1,6 @@
 #define PERSIST_WAKEUP      0
 #define PERSIST_DURATION    1
+#define PERSIST_COUNT_MODE  2
 
 #define PERSIST_READY       8
 #define PERSIST_TEMP_UNIT   9

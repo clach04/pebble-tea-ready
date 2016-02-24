@@ -7,3 +7,4 @@
 
 void countdown_destroy();
 void countdown_display(bool);
+void wakeup_timer_handler(WakeupId, int32_t);
