@@ -269,7 +269,7 @@ void wakeup_timer_handler(WakeupId id, int32_t reason) {
       delay -= persist_read_int(PERSIST_DURATION);
     
     // Adjust the delay based on the tea's initial temperature
-    delay += (get_tea_temp(reason) - 80) * 2.5 * 60;
+    delay += (get_tea_temp(reason) - 80) * 0.5 * 60;
     
     // Increase the delay based on the selected temperature
     switch(persist_read_int(PERSIST_READY)) {
