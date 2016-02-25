@@ -99,7 +99,7 @@ static void countdown_window_load(Window *window) {
       text_layer_set_text(s_ready_text_layer, "Enjoy your tea");
       break;
     default:
-      text_layer_set_text(s_ready_text_layer, "Be patient");
+      text_layer_set_text(s_ready_text_layer, "Let it steep");
   }
   text_layer_set_text_alignment(s_ready_text_layer, GTextAlignmentCenter);
   text_layer_set_font(s_ready_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));

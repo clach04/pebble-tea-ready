@@ -1,6 +1,6 @@
 Pebble.addEventListener('showConfiguration', function(e) {
   // Show config page
-  Pebble.openURL('https://leomike.com/pebble/tea_config_0.7.html');
+  Pebble.openURL('https://leomike.com/pebble/tea_config_0.8.html');
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -18,7 +18,8 @@ Pebble.addEventListener('webviewclosed', function(e) {
     'PERSIST_TEA_OOLONG': config_data.oolong * 60 * config_data.oolong_hide,
     'PERSIST_TEA_PUERH': config_data.puerh * 60 * config_data.puerh_hide,
     'PERSIST_TEA_ROOIBOS': config_data.rooibos * 60 * config_data.rooibos_hide,
-    'PERSIST_TEA_WHITE': config_data.white * 60 * config_data.white_hide
+    'PERSIST_TEA_WHITE': config_data.white * 60 * config_data.white_hide,
+    'PERSIST_TEA_MATCHA': config_data.matcha * 60 * config_data.matcha_hide
   };
   
   // Send settings to Pebble watchapp

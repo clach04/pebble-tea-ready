@@ -36,6 +36,7 @@ static TeaInfo tea_array[] = {
   {"Green", 120, PERSIST_TEA_GREEN, 80},
   {"Herbal", 240, PERSIST_TEA_HERBAL, 96},
   {"Maté", 240, PERSIST_TEA_MATE, 85},
+  {"Matcha", 240, PERSIST_TEA_MATE, 85},
   {"Oolong", 240, PERSIST_TEA_OOLONG, 85},
   {"Pu'erh", 240, PERSIST_TEA_PUERH, 96},
   {"Rooibos", 240, PERSIST_TEA_ROOIBOS, 96},
@@ -180,8 +181,8 @@ static int get_tea_index_by_pos(int position) {
   int count = 0, i;
   
   // Count options with a time attached
-  for(i = PERSIST_TEA_BLACK; i <= PERSIST_TEA_WHITE; i++) {
-    if(!persist_exists(i) || persist_read_int(i) != 0) {
+  for(i = 0; i < 9; i++) {
+    if(persist_read_int(tea_array[i].persist_key) != 0) {
       // Return when the correct entry is found
       if(count == position)
         return i - PERSIST_TEA_BLACK;
@@ -198,8 +199,8 @@ static int get_tea_tount() {
   int count = 0, i;
   
   // Count options with a time attached
-  for(i = PERSIST_TEA_BLACK; i <= PERSIST_TEA_WHITE; i++) {
-    if(!persist_exists(i) || persist_read_int(i) != 0)
+  for(i = PERSIST_TEA_BLACK; i <= PERSIST_TEA_MATCHA; i++) {
+    if(persist_read_int(i) != 0)
       count++;
   }
   

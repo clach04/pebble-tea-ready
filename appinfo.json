@@ -4,6 +4,7 @@
         "PERSIST_TEA_BLACK": 10,
         "PERSIST_TEA_GREEN": 11,
         "PERSIST_TEA_HERBAL": 12,
+        "PERSIST_TEA_MATCHA": 18,
         "PERSIST_TEA_MATE": 13,
         "PERSIST_TEA_OOLONG": 14,
         "PERSIST_TEA_PUERH": 15,
