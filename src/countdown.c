@@ -9,6 +9,7 @@
 
 static void countdown_back_handler(ClickRecognizerRef, void*);
 static void countdown_cancel_handler(ClickRecognizerRef, void*);
+static void vibrate_cancel_handler(ClickRecognizerRef, void*);
 static void countdown_click_config_provider(void*);
 static void countdown_timer_handler(void*);
 static void countdown_update_layer(Layer*, GContext*);
@@ -26,6 +27,7 @@ static Window *s_countdown_window;
 static Layer *s_tea_cup_canvas_layer;
 static ActionBarLayer *s_action_bar_layer;
 static GBitmap *s_cross_bitmap;
+static GBitmap *s_check_bitmap;
 static TextLayer *s_ready_text_layer;
 
 // Reference variables
@@ -44,7 +46,7 @@ static uint8_t s_count_mode;
 /********************/
 
 // Remotely callable function to display the window
-void countdown_display(bool animate) {
+void countdown_display() {
   // Force a window update if already displayed
   window_stack_remove(s_countdown_window, false);
   
@@ -56,7 +58,7 @@ void countdown_display(bool animate) {
   });
     
   // Display window
-  window_stack_push(s_countdown_window, animate);
+  window_stack_push(s_countdown_window, false);
 }
 
 // Loading code for the window
@@ -73,14 +75,22 @@ static void countdown_window_load(Window *window) {
   // Display action bar while counting down
   if(s_count_mode != 2) {
     s_cross_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CROSS);
+    s_check_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHECK);
     s_action_bar_layer = action_bar_layer_create();
-    action_bar_layer_set_icon(s_action_bar_layer, BUTTON_ID_SELECT, s_cross_bitmap);
+    if(s_count_mode == 1 && s_vibrate_timer)
+      action_bar_layer_set_icon(s_action_bar_layer, BUTTON_ID_SELECT, s_check_bitmap);
+    else
+      action_bar_layer_set_icon(s_action_bar_layer, BUTTON_ID_SELECT, s_cross_bitmap);
     action_bar_layer_set_click_config_provider(s_action_bar_layer, countdown_click_config_provider);
     action_bar_layer_add_to_window(s_action_bar_layer, window);
   }
   else
     window_set_click_config_provider(window, completed_click_config_provider);
-
+  
+  // Setup countdown timer
+  if(s_count_mode != 2)
+    s_countdown_timer = app_timer_register(0, countdown_timer_handler, NULL);
+  
   // Create canvas Layer and set up the update procedure
   s_tea_cup_canvas_layer = layer_create(bounds);
   layer_set_update_proc(s_tea_cup_canvas_layer, countdown_update_layer);
@@ -89,18 +99,19 @@ static void countdown_window_load(Window *window) {
   // Display text based on state
   s_ready_text_layer = text_layer_create(GRect(0, bounds.size.h / 2 + 25, bounds.size.w, 40));
   switch(s_count_mode) {
-    case 1:
-      text_layer_set_text(s_ready_text_layer, "Let it cool");
+    case 0:
+      // Matcha tea
+      if(persist_read_int(PERSIST_TEA) == 4)
+        text_layer_set_text(s_ready_text_layer, "Whisk");
+      else
+        text_layer_set_text(s_ready_text_layer, "Let it steep");
       break;
     case 2:
       text_layer_set_text(s_ready_text_layer, "Enjoy your tea");
       break;
     default:
-      // Matcha tea
-      if(persist_read_int(PERSIST_TEA) == 4)
-        text_layer_set_text(s_ready_text_layer, "Wisk");
-      else
-        text_layer_set_text(s_ready_text_layer, "Let it steep");
+      text_layer_set_text(s_ready_text_layer, "Let it cool");
+      break;
   }
   text_layer_set_text_alignment(s_ready_text_layer, GTextAlignmentCenter);
   text_layer_set_font(s_ready_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
@@ -113,20 +124,16 @@ static void countdown_window_load(Window *window) {
     case 0:
       window_set_background_color(s_countdown_window, GColorVividCerulean);
       break;
-    case 1:
-      window_set_background_color(s_countdown_window, GColorGreen);
-      break;
     case 2:
       window_set_background_color(s_countdown_window, GColorOrange);
+      break;
+    default:
+      window_set_background_color(s_countdown_window, GColorGreen);
       break;
   }
   #else
   window_set_background_color(s_countdown_window, GColorLightGray);
   #endif
-  
-  // Setup countdown timer
-  if(s_count_mode != 2)
-    s_countdown_timer = app_timer_register(0, countdown_timer_handler, NULL);
 }
 
 
@@ -144,7 +151,7 @@ static void countdown_back_handler(ClickRecognizerRef recognizer, void *context)
   window_stack_pop_all(true);
 }
 
-// Set select button handler
+// Set select button handler to cancel
 static void countdown_cancel_handler(ClickRecognizerRef recognizer, void *context) {
   // Cancel the wakeup
   if (persist_exists(PERSIST_WAKEUP)) {
@@ -164,10 +171,21 @@ static void countdown_cancel_handler(ClickRecognizerRef recognizer, void *contex
   window_stack_pop(true);
 }
 
+// Set select button handler to stop vibration
+static void vibrate_cancel_handler(ClickRecognizerRef recognizer, void *context) {
+  if(s_vibrate_timer)
+    app_timer_cancel(s_vibrate_timer);
+  s_vibrate_timer = NULL;
+  countdown_display();
+}
+
 // Function called on button press
 static void countdown_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_BACK, countdown_back_handler);
-  window_single_click_subscribe(BUTTON_ID_SELECT, countdown_cancel_handler);
+  if(s_count_mode == 1 && s_vibrate_timer)
+    window_single_click_subscribe(BUTTON_ID_SELECT, vibrate_cancel_handler);
+  else
+    window_single_click_subscribe(BUTTON_ID_SELECT, countdown_cancel_handler);
 }
 static void completed_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_BACK, countdown_back_handler);
@@ -187,21 +205,15 @@ void countdown_destroy() {
 
 // Unloading code
 static void countdown_window_unload(Window *window) {
-  // Cancel timers
-  if(s_countdown_timer)
-    app_timer_cancel(s_countdown_timer);
-  if(s_vibrate_timer)
-    app_timer_cancel(s_vibrate_timer);
-  
   // Destroy interface
   layer_destroy(s_tea_cup_canvas_layer);
   tea_cup_destroy();
   if(s_count_mode != 2) {
-    gbitmap_destroy(s_cross_bitmap);
     action_bar_layer_destroy(s_action_bar_layer);
+    gbitmap_destroy(s_cross_bitmap);
+    gbitmap_destroy(s_check_bitmap);
   }
-  if(s_count_mode != 0)
-    text_layer_destroy(s_ready_text_layer);
+  text_layer_destroy(s_ready_text_layer);
   window_destroy(window);
 }
 
@@ -217,11 +229,14 @@ static void countdown_timer_handler(void *data) {
     s_countdown_percentage = 100 - s_countdown_percentage;
  
   // Update layer
-  layer_mark_dirty(s_tea_cup_canvas_layer);
+  if(s_tea_cup_canvas_layer)
+    layer_mark_dirty(s_tea_cup_canvas_layer);
   
   // Schedule next event every tick
   if(s_count_mode != 2)
     s_countdown_timer = app_timer_register(s_countdown_duration * 1000 / 38, countdown_timer_handler, data);
+  else
+    s_countdown_timer = NULL;
 }
 
 // Vibration timer
@@ -234,9 +249,14 @@ static void wakeup_vibrate_handler(void *data) {
     s_vibrate_timer = app_timer_register(10 * 1000, wakeup_vibrate_handler, data);
   }
   else if(vibrate_count == 3) {
-    // Wait for 2 minutes then close the app if tea is ready
     if(s_count_mode == 2)
+      // Wait for 2 minutes then close the app if tea is ready
       s_vibrate_timer = app_timer_register(2 * 60 * 1000, wakeup_vibrate_handler, data);
+    else {
+      // Otherwise remove the option to dismiss vibration
+      s_vibrate_timer = NULL;
+      countdown_display();
+    }
   }
   else {
     // Vibrate one last time
@@ -292,11 +312,11 @@ void wakeup_timer_handler(WakeupId id, int32_t reason) {
       persist_write_int(PERSIST_COUNT_MODE, 1);
     }
   }
-    
-  // Display the countdown
-  countdown_display(true);
   
   // Vibrate
   vibrate_count = 0;
   s_vibrate_timer = app_timer_register(0, wakeup_vibrate_handler, NULL);
+    
+  // Display the countdown
+  countdown_display();
 }

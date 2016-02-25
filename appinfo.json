@@ -22,6 +22,12 @@
     "resources": {
         "media": [
             {
+                "file": "images/check.png",
+                "name": "IMAGE_CHECK",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
                 "file": "images/cross.png",
                 "name": "IMAGE_CROSS",
                 "targetPlatforms": null,
@@ -37,7 +43,7 @@
         "chalk"
     ],
     "uuid": "cf418523-f867-453d-8b4e-e04ea2f9df06",
-    "versionLabel": "0.7",
+    "versionLabel": "0.8",
     "watchapp": {
         "watchface": false
     }

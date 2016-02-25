@@ -161,7 +161,7 @@ static void menu_select_callback(struct MenuLayer *s_menu_layer, MenuIndex *cell
     persist_write_int(PERSIST_TEA, index);
   
     // Switch to countdown window
-    countdown_display(false);
+    countdown_display();
   }
 }
 
@@ -193,7 +193,7 @@ static int get_tea_index_by_pos(int position) {
   
   // Count options with a time attached
   for(i = 0; i < 9; i++) {
-    if(!persist_exists(i) || persist_read_int(tea_array[i].persist_key) != 0) {
+    if(!persist_exists(tea_array[i].persist_key) || persist_read_int(tea_array[i].persist_key) != 0) {
       // Return when the correct entry is found
       if(count == position)
         return i;
