@@ -25,7 +25,6 @@ static void completed_click_config_provider(void*);
 static Window *s_countdown_window;
 static Layer *s_tea_cup_canvas_layer;
 static ActionBarLayer *s_action_bar_layer;
-static GBitmap *s_check_bitmap;
 static GBitmap *s_cross_bitmap;
 static TextLayer *s_ready_text_layer;
 
@@ -73,11 +72,9 @@ static void countdown_window_load(Window *window) {
 
   // Display action bar while counting down
   if(s_count_mode != 2) {
-    s_check_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CHECK);
     s_cross_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CROSS);
     s_action_bar_layer = action_bar_layer_create();
-    action_bar_layer_set_icon(s_action_bar_layer, BUTTON_ID_UP, s_check_bitmap);
-    action_bar_layer_set_icon(s_action_bar_layer, BUTTON_ID_DOWN, s_cross_bitmap);
+    action_bar_layer_set_icon(s_action_bar_layer, BUTTON_ID_SELECT, s_cross_bitmap);
     action_bar_layer_set_click_config_provider(s_action_bar_layer, countdown_click_config_provider);
     action_bar_layer_add_to_window(s_action_bar_layer, window);
   }
@@ -99,7 +96,11 @@ static void countdown_window_load(Window *window) {
       text_layer_set_text(s_ready_text_layer, "Enjoy your tea");
       break;
     default:
-      text_layer_set_text(s_ready_text_layer, "Let it steep");
+      // Matcha tea
+      if(persist_read_int(PERSIST_TEA) == 4)
+        text_layer_set_text(s_ready_text_layer, "Wisk");
+      else
+        text_layer_set_text(s_ready_text_layer, "Let it steep");
   }
   text_layer_set_text_alignment(s_ready_text_layer, GTextAlignmentCenter);
   text_layer_set_font(s_ready_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
@@ -157,6 +158,7 @@ static void countdown_cancel_handler(ClickRecognizerRef recognizer, void *contex
   persist_delete(PERSIST_WAKEUP);
   persist_delete(PERSIST_DURATION);
   persist_delete(PERSIST_COUNT_MODE);
+  persist_delete(PERSIST_TEA);
   
   // Close current window
   window_stack_pop(true);
@@ -165,8 +167,7 @@ static void countdown_cancel_handler(ClickRecognizerRef recognizer, void *contex
 // Function called on button press
 static void countdown_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_BACK, countdown_back_handler);
-  window_single_click_subscribe(BUTTON_ID_UP, countdown_back_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, countdown_cancel_handler);
+  window_single_click_subscribe(BUTTON_ID_SELECT, countdown_cancel_handler);
 }
 static void completed_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_BACK, countdown_back_handler);
@@ -196,7 +197,6 @@ static void countdown_window_unload(Window *window) {
   layer_destroy(s_tea_cup_canvas_layer);
   tea_cup_destroy();
   if(s_count_mode != 2) {
-    gbitmap_destroy(s_check_bitmap);
     gbitmap_destroy(s_cross_bitmap);
     action_bar_layer_destroy(s_action_bar_layer);
   }

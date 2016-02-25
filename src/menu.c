@@ -36,7 +36,7 @@ static TeaInfo tea_array[] = {
   {"Green", 120, PERSIST_TEA_GREEN, 80},
   {"Herbal", 240, PERSIST_TEA_HERBAL, 96},
   {"Maté", 240, PERSIST_TEA_MATE, 85},
-  {"Matcha", 240, PERSIST_TEA_MATE, 85},
+  {"Matcha", 30, PERSIST_TEA_MATCHA, 75},
   {"Oolong", 240, PERSIST_TEA_OOLONG, 85},
   {"Pu'erh", 240, PERSIST_TEA_PUERH, 96},
   {"Rooibos", 240, PERSIST_TEA_ROOIBOS, 96},
@@ -105,22 +105,32 @@ static void menu_draw_row(GContext *ctx, const Layer *cell_layer, MenuIndex *cel
   int persist_key = tea_array[index].persist_key;
   int steep_time = (persist_read_int(persist_key) != 0 ? persist_read_int(persist_key) : tea_array[index].def_time);
   int temp = tea_array[index].temp;
+  char* temp_unit_identifier = "°C";
   
   // Determine the text to display based on temperature unit
   int temp_unit = persist_exists(PERSIST_TEMP_UNIT) ? persist_read_int(PERSIST_TEMP_UNIT) : 0;
   switch(temp_unit) {
     case 1:
-      snprintf(s_tea_text, sizeof(s_tea_text), "%u mins (%u°F)", steep_time / 60, (int) (temp * 1.8 + 32));
+      temp = (int) (temp * 1.8 + 32);
+      temp_unit_identifier = "°F";
       break;
     case 2:
-      snprintf(s_tea_text, sizeof(s_tea_text), "%u mins (%uK)", steep_time / 60, temp + 273);
+      temp += 273;
+      temp_unit_identifier = "K";
       break;
     case 3:
-      snprintf(s_tea_text, sizeof(s_tea_text), "%u mins (%u°R)", steep_time / 60, (int) ((temp + 273) * 1.8));
-      break;
-    default:
-      snprintf(s_tea_text, sizeof(s_tea_text), "%u mins (%u°C)", steep_time / 60, temp);
+      temp = (int) ((temp + 273) * 1.8);
+      temp_unit_identifier = "°R";
   }
+  
+  if(steep_time > 60) {
+    if(steep_time % 60 == 0)
+      snprintf(s_tea_text, sizeof(s_tea_text), "%u mins (%u%s)", steep_time / 60, temp, temp_unit_identifier);
+    else
+      snprintf(s_tea_text, sizeof(s_tea_text), "%u mins %u secs (%u%s)", steep_time / 60, steep_time % 60, temp, temp_unit_identifier);
+  }
+  else
+    snprintf(s_tea_text, sizeof(s_tea_text), "%u secs (%u%s)", steep_time, temp, temp_unit_identifier);
   
   // Draw the cell
   menu_cell_basic_draw(ctx, cell_layer, name, s_tea_text, NULL);
@@ -148,6 +158,7 @@ static void menu_select_callback(struct MenuLayer *s_menu_layer, MenuIndex *cell
     persist_write_int(PERSIST_WAKEUP, s_wakeup_id);
     persist_write_int(PERSIST_DURATION, steep_time);
     persist_write_int(PERSIST_COUNT_MODE, 0);
+    persist_write_int(PERSIST_TEA, index);
   
     // Switch to countdown window
     countdown_display(false);
@@ -182,10 +193,10 @@ static int get_tea_index_by_pos(int position) {
   
   // Count options with a time attached
   for(i = 0; i < 9; i++) {
-    if(persist_read_int(tea_array[i].persist_key) != 0) {
+    if(!persist_exists(i) || persist_read_int(tea_array[i].persist_key) != 0) {
       // Return when the correct entry is found
       if(count == position)
-        return i - PERSIST_TEA_BLACK;
+        return i;
       
       count++;
     }
@@ -200,7 +211,7 @@ static int get_tea_tount() {
   
   // Count options with a time attached
   for(i = PERSIST_TEA_BLACK; i <= PERSIST_TEA_MATCHA; i++) {
-    if(persist_read_int(i) != 0)
+    if(!persist_exists(i) || persist_read_int(i) != 0)
       count++;
   }
   
