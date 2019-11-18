@@ -1,6 +1,6 @@
 Pebble.addEventListener('showConfiguration', function(e) {
   // Show config page
-  Pebble.openURL('https://leomike.com/pebble/tea_config_0.8.html');
+  Pebble.openURL('https://clach04.github.io/pebble-tea-ready/tea_config_0.8.html');
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
