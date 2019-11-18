@@ -1,0 +1,102 @@
+<html>
+    <meta charset="utf-8">
+<head>
+    <title>Pebble App</title>
+    <style>
+        p {
+            font-family:Arial;
+            font-size:11pt;
+        }
+
+        h1 {
+            font-family:Arial;
+            font-size:20pt;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>config:</h1>
+    <br><br>
+    <p>WIP
+    </p>
+
+
+    <p>
+        <button id="save_button">Save</button>
+        <button id="cancel_button">Cancel</button>
+    </p>
+
+</body>
+</html>
+
+
+<script>
+
+    // Something like this to get query variables.
+    function getQueryParam(variable, defaultValue) {
+        // Find all URL parameters
+        var query = location.search.substring(1);
+        var vars = query.split('&');
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split('=');
+
+            // If the query variable parameter is found, decode it to use and return it for use
+            if (pair[0] === variable) {
+                return decodeURIComponent(pair[1]);
+            }
+        }
+        return defaultValue || false;
+    }
+
+    // Setup to allow easy adding more options later
+    function saveOptions() {
+        var options = {
+            'ready': 1,  // 2, 3, 4
+            'temp_unit': 1,  // 1(F), 2 (K), or 3 (R)
+            'black': 1,  // appears to be number of minutes - integer only
+            'black_hide': 1,  // ?? guessing 1 or 0 to disable?
+            'green': 1,  // ??
+            'green_hide': 1,  // ??,
+            'herbal': 1,  // ??
+            'herbal_hide': 1,  // ??,
+            'mate': 1,  // ??
+            'mate_hide': 1,  // ??,
+            'oolong': 1,  // ??
+            'oolong_hide': 1,  // ??,
+            'puerh': 1,  // ??
+            'puerh_hide': 1,  // ??,
+            'rooibos': 1,  // ??
+            'rooibos_hide': 1,  // ??,
+            'white': 1,  // ??
+            'white_hide': 1,  // ??,
+            'matcha': 1,  // ??
+            'matcha_hide': 1  // ??
+        }
+        return options;
+    };
+
+
+
+     document.getElementById("cancel_button").addEventListener('click',
+        function () {
+            console.log("Cancel");
+
+            // Set the return URL depending on the runtime environment (emulator or Pebble Phone App)
+            var return_to = getQueryParam('return_to', 'pebblejs://close#cancel');
+            document.location.href = return_to;
+        }
+    , false);
+
+     document.getElementById("save_button").addEventListener('click',
+        function () {
+            console.log("Submit");
+            var options = saveOptions();
+
+            // Set the return URL depending on the runtime environment (emulator or Pebble Phone App)
+            var return_to = getQueryParam('return_to', 'pebblejs://close#');
+            document.location.href = return_to + encodeURIComponent(JSON.stringify(options));
+        }
+    , false);
+
+</script>
